@@ -1,0 +1,264 @@
+-- leaked by script haven join https://discord.gg/xfwA9fNFMe
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+
+local sg = Instance.new("ScreenGui")
+sg.Name = "MizanoResetGui"
+sg.ResetOnSpawn = false
+sg.DisplayOrder = 999
+if not pcall(function() sg.Parent = game:GetService("CoreGui") end) then
+	sg.Parent = PlayerGui
+end
+
+local function makeStroke(parent)
+	local st = Instance.new("UIStroke", parent)
+	st.Thickness = 2.5
+	st.Color = Color3.fromRGB(255, 255, 255)
+	st.Transparency = 0
+	local g = Instance.new("UIGradient")
+	ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 255)),
+    ColorSequenceKeypoint.new(0.15, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(0.30, Color3.fromRGB(0, 0, 255)),
+    ColorSequenceKeypoint.new(0.45, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(0.60, Color3.fromRGB(0, 0, 255)),
+    ColorSequenceKeypoint.new(0.75, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 255))
+})
+	g.Rotation = 0
+	g.Parent = st
+	task.spawn(function()
+		while task.wait() do
+			for i = 0, 360, 2 do
+				g.Rotation = i
+				task.wait(0.01)
+			end
+		end
+	end)
+end
+
+local MAIN_H = 98
+local DROP_H = 42
+local GAP = 4
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 170, 0, MAIN_H)
+mainFrame.Position = UDim2.new(1, -185, 0, 10)
+mainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.BorderSizePixel = 0
+mainFrame.ZIndex = 999
+mainFrame.Parent = sg
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
+makeStroke(mainFrame)
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, -36, 0, 26)
+titleLabel.Position = UDim2.new(0, 10, 0, 4)
+titleLabel.BackgroundTransparency = 1
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Text = "AYRIII Hub"
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 14
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.ZIndex = 1000
+titleLabel.Parent = mainFrame
+
+local dotsBtn = Instance.new("TextButton")
+dotsBtn.Size = UDim2.new(0, 28, 0, 26)
+dotsBtn.Position = UDim2.new(1, -32, 0, 4)
+dotsBtn.BackgroundTransparency = 1
+dotsBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+dotsBtn.Text = "..."
+dotsBtn.Font = Enum.Font.GothamBold
+dotsBtn.TextSize = 14
+dotsBtn.ZIndex = 1000
+dotsBtn.Parent = mainFrame
+
+local divLine = Instance.new("Frame")
+divLine.Size = UDim2.new(1, -20, 0, 1)
+divLine.Position = UDim2.new(0, 10, 0, 30)
+divLine.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+divLine.BorderSizePixel = 0
+divLine.ZIndex = 1000
+divLine.Parent = mainFrame
+
+local resetBtn = Instance.new("TextButton")
+resetBtn.Size = UDim2.new(1, -20, 0, 32)
+resetBtn.Position = UDim2.new(0, 10, 0, 38)
+resetBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+resetBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+resetBtn.Text = "STERBEN WIE AYRIS"
+resetBtn.Font = Enum.Font.GothamBold
+resetBtn.TextSize = 12
+resetBtn.AutoButtonColor = false
+resetBtn.ZIndex = 1000
+resetBtn.Parent = mainFrame
+Instance.new("UICorner", resetBtn).CornerRadius = UDim.new(0, 6)
+
+local discordLabel = Instance.new("TextLabel")
+discordLabel.Size = UDim2.new(1, -20, 0, 14)
+discordLabel.Position = UDim2.new(0, 10, 0, 76)
+discordLabel.BackgroundTransparency = 1
+discordLabel.TextColor3 = Color3.fromRGB(70, 70, 70)
+discordLabel.Text = "leck eier"
+discordLabel.Font = Enum.Font.Gotham
+discordLabel.TextSize = 9
+discordLabel.TextXAlignment = Enum.TextXAlignment.Center
+discordLabel.ZIndex = 1000
+discordLabel.Parent = mainFrame
+
+local drop = Instance.new("Frame")
+drop.Size = UDim2.new(0, 170, 0, DROP_H)
+drop.Position = UDim2.new(1, -185, 0, 10 - DROP_H - GAP)
+drop.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+drop.BorderSizePixel = 0
+drop.ZIndex = 999
+drop.Visible = false
+drop.Parent = sg
+Instance.new("UICorner", drop).CornerRadius = UDim.new(0, 10)
+makeStroke(drop)
+
+local balloonBtn = Instance.new("TextButton")
+balloonBtn.Size = UDim2.new(1, 0, 1, 0)
+balloonBtn.BackgroundTransparency = 1
+balloonBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+balloonBtn.Text = "●  Reset On Balloon"
+balloonBtn.Font = Enum.Font.GothamBold
+balloonBtn.TextSize = 11
+balloonBtn.AutoButtonColor = false
+balloonBtn.ZIndex = 1000
+balloonBtn.Parent = drop
+
+local balloonEnabled = true -- Auto nyala
+local deathCoords = CFrame.new(1000003.56, 999999.69, 8.17)
+
+local function equipCarpet()
+	local char = player.Character
+	if not char then return end
+	local backpack = player:FindFirstChild("Backpack")
+	if backpack then
+		for _, tool in ipairs(backpack:GetChildren()) do
+			if tool:IsA("Tool") and tool.Name:lower():find("carpet") then
+				char.Humanoid:EquipTool(tool)
+				return
+			end
+		end
+	end
+end
+
+local function tpAndDie()
+	local char = player.Character
+	if not char then return end
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	local hum = char:FindFirstChild("Humanoid")
+	if not hrp or not hum then return end
+	equipCarpet()
+	task.wait()
+	hrp.CFrame = deathCoords
+	local conn
+	conn = RunService.Heartbeat:Connect(function()
+		if not char or not char.Parent then conn:Disconnect() return end
+		local h = char:FindFirstChild("Humanoid")
+		local r = char:FindFirstChild("HumanoidRootPart")
+		if not h or not r then conn:Disconnect() return end
+		if h.Health <= 0 then conn:Disconnect() return end
+		r.CFrame = deathCoords
+	end)
+end
+
+-- Toggle reset dengan tombol X
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	if input.KeyCode == Enum.KeyCode.X then
+		tpAndDie()
+	end
+end)
+
+local dragging, dragStart, startPos
+mainFrame.InputBegan:Connect(function(i)
+	if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = i.Position
+		startPos = mainFrame.Position
+	end
+end)
+mainFrame.InputChanged:Connect(function(i)
+	if dragging and (i.UserInputType == Enum.UserInputType.MouseMovement or i.UserInputType == Enum.UserInputType.Touch) then
+		local d = i.Position - dragStart
+		local nx = startPos.X.Offset + d.X
+		local ny = startPos.Y.Offset + d.Y
+		mainFrame.Position = UDim2.new(startPos.X.Scale, nx, startPos.Y.Scale, ny)
+		drop.Position = UDim2.new(startPos.X.Scale, nx, startPos.Y.Scale, ny - DROP_H - GAP)
+	end
+end)
+mainFrame.InputEnded:Connect(function(i)
+	if i.UserInputType == Enum.UserInputType.MouseButton1 or i.UserInputType == Enum.UserInputType.Touch then
+		dragging = false
+	end
+end)
+
+resetBtn.Activated:Connect(function()
+	tpAndDie()
+end)
+
+dotsBtn.Activated:Connect(function()
+	drop.Visible = not drop.Visible
+end)
+
+balloonBtn.Activated:Connect(function()
+	balloonEnabled = not balloonEnabled
+	if balloonEnabled then
+		balloonBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+		balloonBtn.Text = "●  Reset On Balloon"
+	else
+		balloonBtn.TextColor3 = Color3.fromRGB(120, 120, 120)
+		balloonBtn.Text = "o  Reset On Balloon"
+	end
+end)
+
+local function hasBalloon(text)
+	if typeof(text) ~= "string" then return false end
+	return string.lower(text):find('ran "balloon" on you!') ~= nil
+end
+
+local function checkText(text)
+	if balloonEnabled and hasBalloon(text) then
+		tpAndDie()
+	end
+end
+
+local function scanGuiObjects(parent)
+	for _, obj in ipairs(parent:GetDescendants()) do
+		if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
+			checkText(obj.Text)
+			obj:GetPropertyChangedSignal("Text"):Connect(function()
+				checkText(obj.Text)
+			end)
+		end
+	end
+end
+
+local function setupGuiWatcher(gui)
+	gui.DescendantAdded:Connect(function(desc)
+		if desc:IsA("TextLabel") or desc:IsA("TextButton") or desc:IsA("TextBox") then
+			checkText(desc.Text)
+			desc:GetPropertyChangedSignal("Text"):Connect(function()
+				checkText(desc.Text)
+			end)
+		end
+	end)
+end
+
+for _, gui in ipairs(PlayerGui:GetChildren()) do
+	scanGuiObjects(gui)
+	setupGuiWatcher(gui)
+end
+
+PlayerGui.ChildAdded:Connect(function(gui)
+	setupGuiWatcher(gui)
+	scanGuiObjects(gui)
+end)
